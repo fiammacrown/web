@@ -13,12 +13,27 @@
     <header>
         <div class="container">
             <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-                <a class="navbar-brand" asp-action="Index" asp-controller="Home">WebLabsV06</a>
+                <a class="navbar-brand" href="#">WebLabsV01</a>
                 <div class="navbar-nav">
-                    @await Component.InvokeAsync("Menu")
+                    <a class="nav-item nav-link active" asp-controller="Home" asp-action="Index">Lab 2</a>
+                    <a class="nav-item nav-link" asp-controller="Product" asp-action="Index">Каталог</a>
+                    <a class="nav-item nav-link" asp-area="Admin" asp-page="/Index">Администрирование</a>
                 </div>
-                @await Component.InvokeAsync("Cart")
-                <partial name="_UserPartial" />
+                <a asp-controller="Cart" asp-action="Index" class="navbar-text ml-auto"> 00,0 руб <i class="fas fa-shopping-cart nav-color"></i> (0)</a>
+                <div class="dropdown ml-4 nav-color">
+                    <div class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="~/images/avatar.png" width="30" alt="User" class="rounded" />
+                    </div>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-item-text">
+                            <img src="~/images/avatar.png" width="50" alt="User" class="rounded" />
+                            user@mail.ru
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-controller="Cart" asp-action="Index">Мои товары</a>
+                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">Log off</a>
+                    </div>
+                </div>
             </nav>
         </div>
     </header>
