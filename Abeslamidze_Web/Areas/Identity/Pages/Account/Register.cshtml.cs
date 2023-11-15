@@ -62,6 +62,8 @@ namespace Abeslamidze_Web.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            public IFormFile Avatar { get; set; }
         }
 
         public async Task OnGetAsync(string? returnUrl = null)
@@ -77,6 +79,16 @@ namespace Abeslamidze_Web.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+
+                if (Input.Avatar != null)
+                {
+                    user.AvatarImage = new byte[(int)Input.Avatar.Length];
+                    await Input.Avatar.OpenReadStream().ReadAsync(
+                        user.AvatarImage,
+                        0,
+                        (int)Input.Avatar.Length);
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
