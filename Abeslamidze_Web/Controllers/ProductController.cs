@@ -1,4 +1,5 @@
 ﻿using Abeslamidze_Web.DAL.Entities;
+using Abeslamidze_Web.Extensions;
 using Abeslamidze_Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,9 @@ namespace Abeslamidze_Web.Controllers
             _pageSize = 3;
             SetupData();
         }
+
+        [Route("Catalog")]
+        [Route("Catalog/Page_{pageNo}")]
         public IActionResult Index(int? group, int pageNo = 1)
         {
             var dishesFiltered = _dishes.Where(d => !group.HasValue || d.DishGroupId == group.Value);
@@ -24,9 +28,12 @@ namespace Abeslamidze_Web.Controllers
             ViewData["Groups"] = _dishGroups;
             // Получить id текущей группы и поместить в TempData
             ViewData["CurrentGroup"] = group ?? 0;
-
-            return View(ListViewModel<Dish>.GetModel(dishesFiltered, pageNo, _pageSize));
-        }
+			var model = ListViewModel<Dish>.GetModel(dishesFiltered, pageNo, _pageSize);
+			if (RequestExtensions.IsAjaxRequest(Request))
+                return PartialView("_listpartial", model);
+			else
+				return View(model);
+		}
 
         /// <summary>
         /// Инициализация списков

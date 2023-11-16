@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Abeslamidze_Web.Controllers;
 using Abeslamidze_Web.DAL.Entities;
 using Xunit;
+using Microsoft.AspNetCore.Http;
+using Moq;
 
 namespace Abeslamidze_Web.Tests;
 
@@ -14,7 +16,16 @@ typeof(TestData))]
     public void ControllerGetsProperPage(int page, int qty, int id)
     {
         // Arrange
-        var controller = new ProductController();
+        // Контекст контроллера
+        var controllerContext = new ControllerContext();
+        // Макет HttpContext
+        var moqHttpContext = new Mock<HttpContext>();
+        moqHttpContext.Setup(c => c.Request.Headers)
+        .Returns(new HeaderDictionary());
+
+        controllerContext.HttpContext = moqHttpContext.Object;
+        var controller = new ProductController()
+            { ControllerContext = controllerContext };
         controller._dishes = TestData.GetDishesList();
         // Act
         var result = controller.Index(pageNo: page, group: null) as ViewResult;
@@ -29,7 +40,17 @@ typeof(TestData))]
     public void ControllerSelectsGroup()
     {
         // arrange
-        var controller = new ProductController();
+        // Контекст контроллера
+        var controllerContext = new ControllerContext();
+        // Макет HttpContext
+        var moqHttpContext = new Mock<HttpContext>();
+        moqHttpContext.Setup(c => c.Request.Headers)
+        .Returns(new HeaderDictionary());
+
+        controllerContext.HttpContext = moqHttpContext.Object;
+        var controller = new ProductController()
+        { ControllerContext = controllerContext };
+
         var data = TestData.GetDishesList();
         controller._dishes = data;
         var comparer = Comparer<Dish>
