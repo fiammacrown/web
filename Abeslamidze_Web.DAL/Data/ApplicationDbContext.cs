@@ -8,9 +8,10 @@ namespace Abeslamidze_Web.DAL.Data
 	{
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 		: base(options)
-		{
-		}
-
-		public DbSet<ApplicationUser> Users { get; set; }
-	}
+        {
+        }
+        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<Dish> Dishes { get; set; }
+        public DbSet<DishGroup> DishGroups { get; set; }
+    }
 }

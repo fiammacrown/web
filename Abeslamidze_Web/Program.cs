@@ -1,7 +1,9 @@
 using Abeslamidze_Web.DAL.Data;
 using Abeslamidze_Web.DAL.Entities;
+using Abeslamidze_Web.Models;
 using Abeslamidze_Web.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddRazorPages();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(opt =>
+{
+    opt.Cookie.HttpOnly = true;
+    opt.Cookie.IsEssential = true;
+});
+
+builder.Services.AddMvc()
+	.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 	options.SignIn.RequireConfirmedAccount = false;
@@ -32,6 +46,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 	// Other cookie options can be configured here
 });
 
+builder.Services.AddScoped<Cart>(sp => CartService.GetCart(sp));
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -70,5 +85,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.UseAuthentication();
+app.UseSession();
 
 app.Run();
