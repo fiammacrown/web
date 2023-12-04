@@ -11,17 +11,17 @@ namespace Abeslamidze_Web.Controllers
         ApplicationDbContext _context;
         int _pageSize;
 
-        public ProductController(ApplicationDbContext context)
+		public ProductController(ApplicationDbContext context)
         {
             _pageSize = 3;
             _context = context;
-        }
+		}
 
         [Route("Catalog")]
         [Route("Catalog/Page_{pageNo}")]
         public IActionResult Index(int? group, int pageNo = 1)
         {
-            var dishesFiltered = _context.Dishes.Where(d => !group.HasValue || d.DishGroupId == group.Value);
+			var dishesFiltered = _context.Dishes.Where(d => !group.HasValue || d.DishGroupId == group.Value);
 
             // Поместить список групп во ViewData
             ViewData["Groups"] = _context.DishGroups;

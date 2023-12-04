@@ -1,5 +1,6 @@
 using Abeslamidze_Web.DAL.Data;
 using Abeslamidze_Web.DAL.Entities;
+using Abeslamidze_Web.Extension;
 using Abeslamidze_Web.Models;
 using Abeslamidze_Web.Services;
 using Microsoft.AspNetCore.Identity;
@@ -8,10 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.AddFile("Logs/log-{Date}.txt");
+builder.Logging.AddFilter("Microsoft", LogLevel.None);
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+	options.UseSqlServer(connectionString));
+//builder.Services.AddDbContext<ApplicationDbContext>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddRazorPages();
@@ -48,6 +53,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<Cart>(sp => CartService.GetCart(sp));
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 
@@ -88,5 +94,7 @@ app.MapRazorPages();
 
 app.UseAuthentication();
 app.UseSession();
+
+app.UseFileLogging();
 
 app.Run();
