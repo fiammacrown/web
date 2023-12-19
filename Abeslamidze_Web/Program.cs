@@ -86,15 +86,18 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-app.UseAuthentication();
-app.UseSession();
 
 app.UseFileLogging();
+
+app.UseCors(policy =>
+	policy.WithOrigins("https://localhost:7002")
+	.AllowAnyMethod());
 
 app.Run();

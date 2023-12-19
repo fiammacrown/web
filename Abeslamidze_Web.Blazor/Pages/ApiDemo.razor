@@ -1,0 +1,45 @@
+﻿@page "/apidemo"
+@inject HttpClient client
+@using Abeslamidze_Web.Blazor.Data
+
+<div class="container">
+	<DishesList @bind-Dishes="dishes" SelectedObjectChanged="ShowDetails"></DishesList>
+	<DishDetails @bind-Dish="selectedDish"></DishDetails>
+</div>
+
+@code {
+	[Parameter]
+	public IEnumerable<ListViewModel> dishes { get; set; }
+
+	string apiBaseAddress = "https://localhost:7296/api/Dishes";
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			dishes = await client.GetFromJsonAsync<IEnumerable<ListViewModel>>(apiBaseAddress);
+
+		} 
+		catch (Exception ex)
+		{
+			dishes = null;
+			Console.WriteLine($"Exception: {ex.Message}");
+		}
+		
+
+	}
+
+	[Parameter]
+	public DetailsViewModel selectedDish { get; set; }
+	private async Task ShowDetails(int id)
+	{
+		try
+		{
+		selectedDish = await client.GetFromJsonAsync<DetailsViewModel>(apiBaseAddress + $"/{id}");
+		}
+		catch (Exception ex)
+		{
+			selectedDish = null;
+			Console.WriteLine($"Exception: {ex.Message}");
+		}
+	}
+}
